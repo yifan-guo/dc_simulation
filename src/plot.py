@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
 
-data = pd.read_csv('result/reg_vis_adv_TwoLogReg_LogReg_gen_net_vis_highest_deg_connected_component/size_20/consensus_inertia=0.87_beta=1.00.csv', sep=',')
+data = pd.read_csv('result/reg_vis_adv_TwoLogReg_LogReg_exp_net_adversary_color_changing_amplified_1.1/size_20/consensus_inertia=0.87_beta=1.00.csv', sep=',')
 # data = data[data['delay'].isin([15])]
 
 # c = ['r', 'g', 'b', 'm']
@@ -86,14 +86,19 @@ data = pd.read_csv('result/reg_vis_adv_TwoLogReg_LogReg_gen_net_vis_highest_deg_
 axes = plt.gca()
 axes.set_ylim([0, 1])
 
+
+#copy and paste one of the following chunks of code and modify it to your liking. 
+#for example the first chunk of code below generates a plot called ratio_over_adversaries_gen_net_vis_highest_deg_connected_component.png
+#	that plots the consensus ratio as a function of the number of adversaries
+
 # over 1 par
 #ratio over adversaries
 c = ['r', 'g', 'b']
-error = data.groupby('#adversarial')['ratio'].sem() * 1.96
-data.groupby('#adversarial')['ratio'].mean().plot(kind='bar', yerr=error, color=c)
+error = data.groupby('#adversarial')['ratio'].sem() * 1.96	#calculation of 95% confidence interval
+data.groupby('#adversarial')['ratio'].mean().plot(kind='bar', yerr=error, color=c)	#change #adversarial to one of #adversarial, network, or #visibleNodes
 plt.xticks(rotation='horizontal')
 plt.title('ratio over adversaries')
-plt.savefig('ratio_over_adversaries_gen_net_vis_highest_deg_connected_component.png')
+plt.savefig('result/reg_vis_adv_TwoLogReg_LogReg_exp_net_adversary_color_changing_amplified_1.1/size_20/ratio_over_adversaries_gen_net_vis_highest_deg_connected_component.png')	#name of plot
 plt.close()
 
 
