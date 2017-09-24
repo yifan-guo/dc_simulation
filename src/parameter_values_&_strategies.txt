@@ -1,0 +1,24 @@
+Parameters
+
+Game parameters
+players: 20
+visibles: [0, 1, 2, 5]
+adversaries: [0, 2, 5]
+delayTime: [0, 5, 10, 15]
+network: {BA, ER-dense, ER-sparse}
+communication: none
+
+Simulation parameters
+step size: 1 second
+inertia: 0.9
+delay: not applicable
+simulations: 10,000
+
+
+Decision strategies
+
+Regular (not visible) consensus players: If the regular node has at least one visible node for a neighbor, choose the color selected by the majority of neighbor visible nodes. Otherwise, choose the color selected by the naive logistic model.
+
+Adversaries (no consensus players): Choose the color selected by the minority of player's neighbors. If there are as many red neighbors as green, randomly pick one color with probability 0.5
+
+Visible consensus player: Choose the color selected by the majority of player's neighbors, or randomly pick one color with probability 0.5 if there is no majority.
