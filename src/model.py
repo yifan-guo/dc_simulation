@@ -199,7 +199,7 @@ class GameAgent(Agent):
                     # y = -3.83 + 0.23 * end_game + 1.55 * opposite_local_vis + 1.03 * opposite_local_inv - 0.06 * neighbors_inv - 0.38 * current_local_inv  # trained on all games YG
                     # y = -3.7 + 1.51 * opposite_local_vis + 0.87 * opposite_local_inv - 0.44 * current_local_inv - 0.05 * neighbors_inv  #trained on all games training
                     # y = -4.06 + 1.36 * opposite_local_inv + 1.55 * opposite_local_vis - 0.07 * neighbors_inv    #trained on all games (time only)
-                    y = -3.6 + 1.33 * 1.5 * opposite_local_vis - 0.23 * 1.5 * current_local_vis + 1.1 * 1.5 * opposite_local_inv - 0.32 * 1.5 * current_local_inv - 0.06 * neighbors_inv    #trained on all games (time only)
+                    y = -3.6 + 1.33 * opposite_local_vis - 0.23 * current_local_vis + 1.1 * opposite_local_inv - 0.32 * current_local_inv - 0.06 * neighbors_inv    #trained on all games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -209,7 +209,7 @@ class GameAgent(Agent):
                     # y = -4.36 + 0.22 * end_game + 2.84 * opposite_local_inv     #trained on all games YG
                     # y = -4.32 + 2.81 * opposite_local_inv   #trained on all games training
                     # y = -4.31 + 2.85 * opposite_local_inv   #trained on all games (time only)
-                    y = -4.19 + 2.89 * 1.5 * opposite_local_inv - 0.04 * 1.5 * current_local_inv - 0.02 * neighbors_inv     #trained on all games (time only)
+                    y = -4.19 + 2.89 * opposite_local_inv - 0.04 * current_local_inv - 0.02 * neighbors_inv     #trained on all games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -223,7 +223,7 @@ class GameAgent(Agent):
                     # y = -2.94 - 0.01 * self.game.time + 0.49 * end_game - 0.56 * opposite_local_inv - 0.20 * neighbors_vis + 0.69 * current_local_vis + 1 * current_local_inv       #trained on all games YG
                     # y = -3.05 + 0.77 * current_local_vis - 0.13 * neighbors_vis     #trained on all games (training)
                     # y = -3.08 + 0.9 * current_local_vis - 0.15 * neighbors_vis    #trained on all games (time only)
-                    y = -2.79 + 0.35 * current_local_vis - 0.35 * opposite_local_vis - 0.20 * neighbors_vis + 0.97 * current_local_inv - 0.59 * opposite_local_inv  #trained on all games (time only)
+                    y = -2.79 + 0.35 * 1.1 * current_local_vis - 0.35 * 1.1 * opposite_local_vis - 0.20 * neighbors_vis + 0.97 * 1.1 * current_local_inv - 0.59 * 1.1 * opposite_local_inv  #trained on all games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -232,7 +232,7 @@ class GameAgent(Agent):
                 else:
                     # y = -2.72 - 0.01 * self.game.time + 0.26 * mid_game + 0.56 * end_game -1.03 * opposite_local_inv + 1.29 * current_local_inv     # trained on all games YG
                     # y = -3.19 - 0.88 * opposite_local_inv + 1.48 * current_local_inv + 0.04 * neighbors_inv     #trained on all games training
-                    y = -2.79 - 1.1 * opposite_local_inv + 1.21 * current_local_inv     #trained on al games (time only)
+                    y = -2.79 - 1.1 * 1.1 * opposite_local_inv + 1.21 * 1.1 * current_local_inv     #trained on al games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -1144,7 +1144,7 @@ if __name__ =="__main__":
             # initialize processes pool
             pool = Pool(processes=40)
             result = pool.map(simulationFunc, args)
-            combineResults(result, args, 'result/reg_vis_adv_TwoLogReg_LogReg_exp_net_visible_color_changing_amplified/size_20')
+            combineResults(result, args, 'result/reg_vis_adv_TwoLogReg_LogReg_exp_net_adversary_color_changing_amplified_1.1/size_20')
 
             pool.close()
             pool.join()
