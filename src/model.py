@@ -164,14 +164,18 @@ class GameAgent(Agent):
         if not self.isAdversarial and not self.isVisibleNode:
             # regular node
             if self.hasVisibleColorNode():
-                y = -3.75 + 1.12 * opposite_local_inv + 1.4 * opposite_local_vis - 0.85 * current_local_inv     #trained on all games (time only)
+                #if regular node has visible neighbors
+                y = -3.75 + 1.12 * opposite_local_inv + 1.4 * opposite_local_vis - 0.85 * current_local_inv
                 prob_of_change = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_change:
+                    #change color
                     return "red" if self.color == "green" else "green"
                 else:
+                    #stay the same color
                     return self.color
             else:
-                y = -3.94 + 0.004 * self.game.time + 2.47 * opposite_local_inv - 0.51 * current_local_inv   #trained on all games (time only)
+                #if regular node does not have visible neighbors
+                y = -3.94 + 0.004 * self.game.time + 2.47 * opposite_local_inv - 0.51 * current_local_inv
                 prob_of_change = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_change:
                     return "red" if self.color == "green" else "green"
@@ -179,26 +183,19 @@ class GameAgent(Agent):
                     return self.color
 
         else:
-            # pColor, dominant = self.getNeighborMajorColor()
-
-            # if self.isVisibleNode:
-            #     return pColor
-
-            # else:
-            #     return "red" if pColor == "green" else "green"
-
             if self.isVisibleNode:
                 #visible node
-                # y = -4.04  - 0.41 * current_local_vis + 1.89 * opposite_local_reg + 0.93 * opposite_local_vis + 0.18 * neighbors_vis - 0.05  * neighbors_reg
                 if self.hasVisibleColorNode():
-                    y = -4.06 + 1.36 * opposite_local_inv + 1.55 * opposite_local_vis - 0.07 * neighbors_inv    #trained on all games (time only)
+                    #if visible node has visible neighbors
+                    y = -4.06 + 1.36 * opposite_local_inv + 1.55 * opposite_local_vis - 0.07 * neighbors_inv
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
                     else:
                         return self.color
                 else:
-                    y = -4.31 + 2.85 * opposite_local_inv   #trained on all games (time only)
+                    #if visible node does not have visible neighbors
+                    y = -4.31 + 2.85 * opposite_local_inv
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -207,14 +204,16 @@ class GameAgent(Agent):
             else:
                 #adversary node
                 if self.hasVisibleColorNode():
-                    y = -3.08 + 0.9 * current_local_vis - 0.15 * neighbors_vis    #trained on all games (time only)
+                    #if adversarial node has visible neighbors
+                    y = -3.08 + 0.9 * current_local_vis - 0.15 * neighbors_vis
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
                     else:
                         return self.color
                 else:
-                    y = -2.79 - 1.1 * 1.1 * opposite_local_inv + 1.21 * 1.1 * current_local_inv     #trained on al games (time only)
+                    #if adversarial node does not have visible neighbors
+                    y = -2.79 - 1.1 * opposite_local_inv + 1.21 * current_local_inv
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -230,9 +229,6 @@ class GameAgent(Agent):
         elif self.game.time >= 30 and self.game.time <= 45:
             mid_game = 1
         neighbors = self.degree()
-
-        # red_local = float((len([neighbor for neighbor in self.neighbors if neighbor.color == "red"]))) / float(len(self.neighbors))
-        # green_local = float((len([neighbor for neighbor in self.neighbors if neighbor.color == "green"]))) / float(len(self.neighbors))
 
         vis_neighbors = [neighbor for neighbor in self.neighbors if neighbor.isVisibleNode]
         neighbors_vis = float(len(vis_neighbors)) / float(neighbors)
@@ -264,12 +260,14 @@ class GameAgent(Agent):
         diff_reg = abs(red_local_reg - green_local_reg)
 
         if self.isAdversarial:
+            #adversarial node
             if self.hasVisibleColorNode():
-                y = -2.68 - 0.04 * self.game.time + 1.03 * diff_vis + 1.01 * diff_inv + 0.21 * neighbors_vis    #trained on all games (time only)
+                #if adversarial node has visible neighbors
+                y = -2.68 - 0.04 * self.game.time + 1.03 * diff_vis + 1.01 * diff_inv + 0.21 * neighbors_vis    #model for deciding whether to stay or deviate from white
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
-                    # model for deciding which color
-                    y2 = -0.37 + 0.83 * green_local_vis     #trained on all games (time only)
+                    # model for deciding whether to deviate to red or green
+                    y2 = -0.37 + 0.83 * green_local_vis
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
                         return "red"
@@ -278,11 +276,12 @@ class GameAgent(Agent):
                 else:
                     return "white"
             else:
-                y = -2.18 - 0.016 * self.game.time + 1.45 * diff_inv    #trained on all games (time only)
+                #if adversarial node does not have visible neighbors
+                y = -2.18 - 0.016 * self.game.time + 1.45 * diff_inv    #model for deciding whether to stay or deviate from white
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
-                    # model for deciding which color
-                    y2 = -0.15 + 1.07 * green_local_inv - 0.69 * red_local_inv  #trained on all games (time only)
+                    # model for deciding whether to deviate to red or green
+                    y2 = -0.15 + 1.07 * green_local_inv - 0.69 * red_local_inv
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
                         return "red"
@@ -292,12 +291,14 @@ class GameAgent(Agent):
                     return "white"
 
         elif self.isVisibleNode:
+            #visible node
             if self.hasVisibleColorNode():
-                y = -1.95 + 0.86 * diff_vis + 0.61 * diff_inv       #trained on all games (time only)
+                #if visible node has visible neighbors
+                y = -1.95 + 0.86 * diff_vis + 0.61 * diff_inv   #model for deciding whether to stay or deviate from white
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
-                    # model for deciding which color
-                    y2 = 0.14 - 3.86 * green_local_inv - 1.6 * green_local_vis + 2.63 * red_local_inv + 2.41 * red_local_vis    #trained on all games (time only)
+                    # model for deciding whether to deviate to red or green
+                    y2 = 0.14 - 3.86 * green_local_inv - 1.6 * green_local_vis + 2.63 * red_local_inv + 2.41 * red_local_vis
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
                         return "red"
@@ -307,11 +308,12 @@ class GameAgent(Agent):
                     return "white"
 
             else:
-                y = -1.93 + 1.77 * diff_inv     #trained on all games (time only)
+                #if visible node does not have visible neighbors
+                y = -1.93 + 1.77 * diff_inv #model for deciding whether to stay or deviate from white
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
-                    # model for deciding which color
-                    y2 = 0.01 - 4.32 * green_local_inv + 4.32 * red_local_inv   #trained on all games (time only)
+                    #model for deciding whether to deviate to red or green
+                    y2 = 0.01 - 4.32 * green_local_inv + 4.32 * red_local_inv
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
                         return "red"
@@ -322,11 +324,12 @@ class GameAgent(Agent):
         else:
             # regular player
             if self.hasVisibleColorNode():
-                y = -2.2 - 0.04 * self.game.time + 1.1 * diff_vis + 0.82 * diff_inv + 0.08 * neighbors_vis  #trained on all games (time only)
+                #if regular node has viisble neighbors
+                y = -2.2 - 0.04 * self.game.time + 1.1 * diff_vis + 0.82 * diff_inv + 0.08 * neighbors_vis  #model for deciding whether to stay or deviate from white
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
-                    # model for deciding which color
-                    y2 = -0.08 - 2.88 * green_local_inv - 2.07 * green_local_vis + 3.41 * red_local_inv + 1.76 * red_local_vis  #trained on all games (time only)
+                    # model for deciding whether to deviate to red or green
+                    y2 = -0.08 - 2.88 * green_local_inv - 2.07 * green_local_vis + 3.41 * red_local_inv + 1.76 * red_local_vis
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
                         return "red"
@@ -335,11 +338,12 @@ class GameAgent(Agent):
                 else:
                     return "white"
             else:
-                y = -1.94 - 0.03 * self.game.time + 1.63 * diff_inv + 0.01 * neighbors_inv  #trained on all games (time only)
+                #if regular node does not have visible neighbors
+                y = -1.94 - 0.03 * self.game.time + 1.63 * diff_inv + 0.01 * neighbors_inv  #model for deciding whether to stay or deviate from white
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
-                    # model for deciding which color
-                    y2 = -0.003 - 4.95 * green_local_inv + 5.11 * red_local_inv     #trained on all games (time only)
+                    # model for deciding whether to deviate to red or green
+                    y2 = -0.003 - 4.95 * green_local_inv + 5.11 * red_local_inv
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
                         return "red"
