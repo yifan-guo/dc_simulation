@@ -164,8 +164,6 @@ class GameAgent(Agent):
         if not self.isAdversarial and not self.isVisibleNode:
             # regular node
             if self.hasVisibleColorNode():
-                # y = -3.71 - 0.01 * self.game.time + 0.31 * mid_game + 0.56 * end_game - 0.88 * current_local_inv + 1.39 * opposite_local_vis + 1.08 * opposite_local_inv  #trained on all games YG
-                # y = -3.6 + 1.36 * opposite_local_vis + 1.06 * opposite_local_inv -0.91 * current_local_inv - 0.072 * neighbors_vis   #trained on all games training
                 y = -3.75 + 1.12 * opposite_local_inv + 1.4 * opposite_local_vis - 0.85 * current_local_inv     #trained on all games (time only)
                 prob_of_change = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_change:
@@ -173,9 +171,6 @@ class GameAgent(Agent):
                 else:
                     return self.color
             else:
-                # y = -3.91 - 0.01 * self.game.time + 0.28 * mid_game + 0.56 * end_game - 0.33 * current_local_inv + 2.65 * opposite_local_inv    #trained on all games YG
-                # y = -3.91 - 0.01 * self.game.time + 0.28 * mid_game + 0.56 * end_game - 0.33 * current_local_reg + 2.65 * opposite_local_reg    #same as above line but replace inv with reg
-                # y = -3.93 + 2.48 * opposite_local_inv   - 0.53 *current_local_inv + 0.00337 * self.game.time #trained on al games training
                 y = -3.94 + 0.004 * self.game.time + 2.47 * opposite_local_inv - 0.51 * current_local_inv   #trained on all games (time only)
                 prob_of_change = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_change:
@@ -196,20 +191,14 @@ class GameAgent(Agent):
                 #visible node
                 # y = -4.04  - 0.41 * current_local_vis + 1.89 * opposite_local_reg + 0.93 * opposite_local_vis + 0.18 * neighbors_vis - 0.05  * neighbors_reg
                 if self.hasVisibleColorNode():
-                    # y = -3.83 + 0.23 * end_game + 1.55 * opposite_local_vis + 1.03 * opposite_local_inv - 0.06 * neighbors_inv - 0.38 * current_local_inv  # trained on all games YG
-                    # y = -3.7 + 1.51 * opposite_local_vis + 0.87 * opposite_local_inv - 0.44 * current_local_inv - 0.05 * neighbors_inv  #trained on all games training
-                    # y = -4.06 + 1.36 * opposite_local_inv + 1.55 * opposite_local_vis - 0.07 * neighbors_inv    #trained on all games (time only)
-                    y = -3.6 + 1.33 * opposite_local_vis - 0.23 * current_local_vis + 1.1 * opposite_local_inv - 0.32 * current_local_inv - 0.06 * neighbors_inv    #trained on all games (time only)
+                    y = -4.06 + 1.36 * opposite_local_inv + 1.55 * opposite_local_vis - 0.07 * neighbors_inv    #trained on all games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
                     else:
                         return self.color
                 else:
-                    # y = -4.36 + 0.22 * end_game + 2.84 * opposite_local_inv     #trained on all games YG
-                    # y = -4.32 + 2.81 * opposite_local_inv   #trained on all games training
-                    # y = -4.31 + 2.85 * opposite_local_inv   #trained on all games (time only)
-                    y = -4.19 + 2.89 * opposite_local_inv - 0.04 * current_local_inv - 0.02 * neighbors_inv     #trained on all games (time only)
+                    y = -4.31 + 2.85 * opposite_local_inv   #trained on all games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
@@ -217,21 +206,14 @@ class GameAgent(Agent):
                         return self.color
             else:
                 #adversary node
-                #opposite_local = float(len([neighbor for neighbor in self.neighbors if neighbor.color != "white" and neighbor.color != self.color])) / float(len(self.neighbors))
-                #y = -1.72 + 0.35 * mid_game + 0.27 * end_game + 0.02 * neighbors - 2.68  * opposite_local
                 if self.hasVisibleColorNode():
-                    # y = -2.94 - 0.01 * self.game.time + 0.49 * end_game - 0.56 * opposite_local_inv - 0.20 * neighbors_vis + 0.69 * current_local_vis + 1 * current_local_inv       #trained on all games YG
-                    # y = -3.05 + 0.77 * current_local_vis - 0.13 * neighbors_vis     #trained on all games (training)
-                    # y = -3.08 + 0.9 * current_local_vis - 0.15 * neighbors_vis    #trained on all games (time only)
-                    y = -2.79 + 0.35 * 1.1 * current_local_vis - 0.35 * 1.1 * opposite_local_vis - 0.20 * neighbors_vis + 0.97 * 1.1 * current_local_inv - 0.59 * 1.1 * opposite_local_inv  #trained on all games (time only)
+                    y = -3.08 + 0.9 * current_local_vis - 0.15 * neighbors_vis    #trained on all games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
                         return "red" if self.color == "green" else "green"
                     else:
                         return self.color
                 else:
-                    # y = -2.72 - 0.01 * self.game.time + 0.26 * mid_game + 0.56 * end_game -1.03 * opposite_local_inv + 1.29 * current_local_inv     # trained on all games YG
-                    # y = -3.19 - 0.88 * opposite_local_inv + 1.48 * current_local_inv + 0.04 * neighbors_inv     #trained on all games training
                     y = -2.79 - 1.1 * 1.1 * opposite_local_inv + 1.21 * 1.1 * current_local_inv     #trained on al games (time only)
                     prob_of_change = float(1) / float(1 + math.exp(-y))
                     if random.random() < prob_of_change:
@@ -282,21 +264,11 @@ class GameAgent(Agent):
         diff_reg = abs(red_local_reg - green_local_reg)
 
         if self.isAdversarial:
-            #red_global = float(len([n for n in self.game.schedule.agents if n.color == "red"]))/float(len(self.game.adjMat))
-            #green_global = float(len([n for n in self.game.schedule.agents if n.color == "green"]))/float(len(self.game.adjMat))
-            #y = -2.03 - 0.07 * self.game.time + 0.9 * red_local + 0.71 * green_local + 1.01 * red_global + 1.37* green_global
             if self.hasVisibleColorNode():
-                # y = -2.35  - 0.04 * self.game.time + 0.8 * diff_reg + 1 * diff_vis
-                # y = -2.68 + 1.01 * diff_inv + 1.03 * diff_vis - 0.04 * self.game.time + 0.21 * neighbors_vis    # trained on all games YG
-                # y = -2.72 + 1.06 * diff_inv + 1.05 * diff_vis - 0.05 * self.game.time +0.23 * neighbors_vis     # trained on all games (training)
                 y = -2.68 - 0.04 * self.game.time + 1.03 * diff_vis + 1.01 * diff_inv + 0.21 * neighbors_vis    #trained on all games (time only)
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
                     # model for deciding which color
-                    # y2 = 0.08 - 4.6 * green_local + 4.68 * red_local
-                    # y2 = 0.01 + 0.68 * green_local - 0.87 * red_local
-                    # y2 = -0.34 + 0.8 * green_local_vis - 0.07 * red_local_vis    #trained on all games YG
-                    # y2 = -0.42 + 0.55 * green_local_vis     #trained on all games (training)
                     y2 = -0.37 + 0.83 * green_local_vis     #trained on all games (time only)
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
@@ -306,16 +278,10 @@ class GameAgent(Agent):
                 else:
                     return "white"
             else:
-                # y = -2.21 + 1.16 * diff_reg
-                # y = -2.23 - 1.28 * mid_game + 1.34 * diff_inv   # trained on all games YG
-                # y = -2.14 + 1.39 * diff_inv - 0.018 * self.game.time    # trained on all games training
                 y = -2.18 - 0.016 * self.game.time + 1.45 * diff_inv    #trained on all games (time only)
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
                     # model for deciding which color
-                    # y2 = 0.08 - 4.6 * green_local + 4.68 * red_local
-                    # y2 = -0.15 + 1.07 * green_local_inv - 0.69 * red_local_inv      #trained on all games YG
-                    # y2 = -0.11 - 0.72 * red_local_inv + 0.93 * green_local_inv  #trained on all games training
                     y2 = -0.15 + 1.07 * green_local_inv - 0.69 * red_local_inv  #trained on all games (time only)
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
@@ -326,23 +292,11 @@ class GameAgent(Agent):
                     return "white"
 
         elif self.isVisibleNode:
-            # red_global = float(len([n for n in self.game.schedule.agents if n.color == "red"]))/float(len(self.game.adjMat))
-            # green_global = float(len([n for n in self.game.schedule.agents if n.color == "green"]))/float(len(self.game.adjMat))
-            # y = -2.03 - 0.07 * self.game.time + 0.9 * red_local + 0.71 * green_local + 1.01 * red_global + 1.37* green_global
-            # y = -1.86 + 0.51 * red_local_reg + 1.62 * green_local_reg
-            # y = -1.79 - 0.04 * self.game.time + 1.63 * majority_local_reg
-            # y = -1.78 + 1.06 * diff_reg
             if self.hasVisibleColorNode():
-                # y = -1.95  + 0.61 * diff_inv + 0.86 * diff_vis    #trained on all games YG
-                # y = -2.24 + 0.83 * diff_inv + 1.01 * diff_vis  + 0.19 * neighbors_vis   #trained on all games training
                 y = -1.95 + 0.86 * diff_vis + 0.61 * diff_inv       #trained on all games (time only)
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
                     # model for deciding which color
-                    # y2 = 0.08 - 4.6 * green_local + 4.68 * red_local
-                    # y2 = 0.14 - 4.44 * green_local_reg + 4.96 * red_local_reg
-                    # y2 = 0.14 - 3.86 * green_local_inv - 1.61 * green_local_vis + 2.63 * red_local_inv + 2.41 * red_local_vis   #trained on all games YG
-                    # y2 = 0.16 + 2.70 * red_local_inv - 3.84 * green_local_inv  + 2.2 * red_local_vis - 1.23 * green_local_vis   #trained on all games training
                     y2 = 0.14 - 3.86 * green_local_inv - 1.6 * green_local_vis + 2.63 * red_local_inv + 2.41 * red_local_vis    #trained on all games (time only)
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
@@ -353,16 +307,10 @@ class GameAgent(Agent):
                     return "white"
 
             else:
-                # y = -1.95 - 3.38 * mid_game + 1.96 * diff_inv   #trained on all games YG
-                # y = -2.05 + 2.165 * diff_inv - 0.03 * self.game.time + 0.05 * neighbors_inv #trained on all games training
                 y = -1.93 + 1.77 * diff_inv     #trained on all games (time only)
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
                     # model for deciding which color
-                    # y2 = 0.08 - 4.6 * green_local + 4.68 * red_local
-                    # y2 = 0.14 - 4.44 * green_local_reg + 4.96 * red_local_reg
-                    # y2 = 0.01 - 4.32 * green_local_inv + 4.32 * red_local_inv  # trained on all games YG
-                    # y2 = -0.03 + 3.92 * red_local_inv - 3.76 * green_local_inv # trained on all games training
                     y2 = 0.01 - 4.32 * green_local_inv + 4.32 * red_local_inv   #trained on all games (time only)
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
@@ -373,22 +321,11 @@ class GameAgent(Agent):
                     return "white"
         else:
             # regular player
-            # red_global = float(len([n for n in self.game.schedule.agents if n.color == "red"]))/float(len(self.game.adjMat))
-            # green_global = float(len([n for n in self.game.schedule.agents if n.color == "green"]))/float(len(self.game.adjMat))
-            # y = -2.03 - 0.07 * self.game.time + 0.9 * red_local + 0.71 * green_local + 1.01 * red_global + 1.37* green_global
             if self.hasVisibleColorNode():
-                # y = -2.12 - 0.05 * self.game.time + 0.83 * red_local_reg + 0.89 * red_local_vis + 1.17 * green_local_reg + 0.84 * green_local_vis #trained on games with only regular and visibles
-                # y = -2.09 - 0.03 * self.game.time + 0.9 * diff_reg + 0.9 * diff_vis
-                # y = -2.21 - 0.04 * self.game.time - 0.67 * mid_game + 0.08 * neighbors_vis + 0.80 * diff_inv + 1.09 * diff_vis   # trained on all games YG
-                # y = -2.09 + 0.80 * diff_inv + 1.09 * diff_vis - 0.039 * self.game.time  #trained on all games training
                 y = -2.2 - 0.04 * self.game.time + 1.1 * diff_vis + 0.82 * diff_inv + 0.08 * neighbors_vis  #trained on all games (time only)
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
                     # model for deciding which color
-                    # y2 = 0.08 - 4.6 * green_local + 4.68 * red_local             
-                    # y2 = 0.02 - 3.48 * green_local_reg - 1.95 * green_local_vis + 3.48 * red_local_reg + 2.12 * red_local_vis      #trained on games with only regular and visible players
-                    # y2 =  -0.08 - 2.88 * green_local_inv - 2.07 * green_local_vis + 3.41 * red_local_inv + 1.76 * red_local_vis     #trained on all games YG
-                    # y2 = -0.076 + 3.32 * red_local_inv -2.91 * green_local_inv + 1.73 * red_local_vis - 2.02 * green_local_vis  #trained on all games training
                     y2 = -0.08 - 2.88 * green_local_inv - 2.07 * green_local_vis + 3.41 * red_local_inv + 1.76 * red_local_vis  #trained on all games (time only)
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
@@ -398,19 +335,10 @@ class GameAgent(Agent):
                 else:
                     return "white"
             else:
-                # y = -1.96 - 0.05 * self.game.time + 1.52 * red_local + 1.53 * green_local     #trained on games with only regular and visibles
-                # y = -1.92 + 1.72 * diff_reg - 0.04 * self.game.time
-                # y = -1.96 - 0.02 * self.game.time - 0.91 * mid_game + 1.58 * diff_inv + 0.01 * neighbors_inv  #trained on all games YG
-                # y = -1.96 - 0.02 * self.game.time - 0.91 * mid_game + 1.58 * diff_reg + 0.01 * neighbors_reg     #same as above line but replace inv with reg
-                # y= -1.94 + 1.6 * diff_inv + 0.01 * neighbors_inv - 0.03 * self.game.time    #trained on all games training
                 y = -1.94 - 0.03 * self.game.time + 1.63 * diff_inv + 0.01 * neighbors_inv  #trained on all games (time only)
                 prob_of_choose = float(1) / float(1 + math.exp(-y))
                 if random.random() < prob_of_choose:
                     # model for deciding which color
-                    # y2 = 0.08 - 4.6 * green_local + 4.68 * red_local              #trained on games with only regular and visibles
-                    # y2 = -4.94 * green_local_inv + 5.14 * red_local_inv - 0.93 * mid_game     #trained on all games YG
-                    # y2 = -4.94 * green_local_reg + 5.14 * red_local_reg - 0.93 * mid_game   #same as above line but replace inv with reg
-                    # y2 = -0.03 + 5.06 * red_local_inv - 4.89 * green_local_inv # trained on all games training
                     y2 = -0.003 - 4.95 * green_local_inv + 5.11 * red_local_inv     #trained on all games (time only)
                     prob_of_choose_color = float(1) / float(1 + math.exp(-y2))
                     if random.random() < prob_of_choose_color:
